@@ -1,35 +1,33 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from "react";
+import { Canvas } from "@react-three/fiber";
+import { Scene } from "./components/Scene";
+import { PasswordModal } from "./components/PasswordModal";
+import { useCardAnimation } from "./hooks/useCardAnimation";
+import "./App.css";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [isUnlocked, setIsUnlocked] = useState(false);
+  const { pivotRef, toggle, isOpen } = useCardAnimation();
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
+    <div className="canvas-container">
+      <Canvas camera={{ position: [0, 1.5, 5], fov: 45 }} shadows>
+        <Scene pivotRef={pivotRef} isOpen={isOpen} />
+      </Canvas>
+
+      {!isUnlocked ? (
+        <PasswordModal onUnlock={() => setIsUnlocked(true)} />
+      ) : (
+        <button
+          type="button"
+          className="open-button"
+          onClick={toggle}
+        >
+          {isOpen ? "\u95dc\u9589\u8cc0\u5361" : "\u958b\u555f\u8cc0\u5361"}
         </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+      )}
+    </div>
+  );
 }
 
-export default App
+export default App;
